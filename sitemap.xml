@@ -6,52 +6,52 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/references.html</loc>
+    <loc>https://cafethecorner.fr/references/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/reference-ucly.html</loc>
+    <loc>https://cafethecorner.fr/reference-ucly/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/reference-ihecf.html</loc>
+    <loc>https://cafethecorner.fr/reference-ihecf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/reference-tunon.html</loc>
+    <loc>https://cafethecorner.fr/reference-tunon/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/histoire.html</loc>
+    <loc>https://cafethecorner.fr/histoire/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/contact.html</loc>
+    <loc>https://cafethecorner.fr/contact/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/mentions-legales.html</loc>
+    <loc>https://cafethecorner.fr/mentions-legales/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/politique-cookies.html</loc>
+    <loc>https://cafethecorner.fr/politique-cookies/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/politique-confidentialite.html</loc>
+    <loc>https://cafethecorner.fr/politique-confidentialite/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
-    <loc>https://cafethecorner.fr/cgu.html</loc>
+    <loc>https://cafethecorner.fr/cgu/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politique de confidentialité — The Corner</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="/assets/img/logos/favicon-v2.png">
+  <link rel="apple-touch-icon" href="/assets/img/logos/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/Poppins-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/Newsreader-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <main class="legal">
+    <a href="/" class="legal__back">← Retour au site</a>
+    <h1>Politique de <em>confidentialité.</em></h1>
+
+    <h2>Qui est responsable du traitement&nbsp;?</h2>
+    <p>
+      Le responsable du traitement des données collectées sur ce site est <strong>ALFRED</strong> (SAS au capital
+      de 100&nbsp;€, SIREN 924&nbsp;995&nbsp;053), exploitant la marque <strong>The Corner</strong>, dont le siège
+      social est situé 5 rue Gabillot, 69003 Lyon, France. Pour toute question relative à vos données, vous
+      pouvez nous écrire à <a href="mailto:antoine@cafethecorner.fr">antoine@cafethecorner.fr</a>.
+    </p>
+
+    <h2>Quelles données collectons-nous&nbsp;?</h2>
+    <p>
+      Nous ne collectons que les données que vous nous transmettez volontairement&nbsp;:
+    </p>
+    <ul style="margin:0 0 20px 20px; color:var(--brun-soft); line-height:1.7;">
+      <li>Via le formulaire de contact&nbsp;: nom, établissement, fonction, email, téléphone et le contenu de votre message.</li>
+      <li>Via la prise de rendez-vous en ligne (Calendly)&nbsp;: nom, email et les informations que vous choisissez d'indiquer lors de la réservation.</li>
+    </ul>
+    <p>Nous ne collectons aucune donnée à votre insu et n'utilisons aucun cookie de suivi publicitaire (voir notre <a href="/politique-cookies/">politique de cookies</a>).</p>
+
+    <h2>Pourquoi utilisons-nous ces données&nbsp;?</h2>
+    <p>
+      Ces données sont utilisées exclusivement pour répondre à votre demande, échanger avec vous sur un
+      projet d'équipement de votre établissement, et organiser un éventuel rendez-vous. Le traitement repose
+      sur votre consentement, exprimé au moment où vous remplissez volontairement l'un de nos formulaires.
+    </p>
+
+    <h2>Qui a accès à ces données&nbsp;?</h2>
+    <p>
+      Vos données sont traitées par l'équipe de The Corner. Elles transitent également par nos prestataires
+      techniques, qui agissent en tant que sous-traitants&nbsp;:
+    </p>
+    <ul style="margin:0 0 20px 20px; color:var(--brun-soft); line-height:1.7;">
+      <li><strong>Formspree, Inc.</strong> (États-Unis) pour l'acheminement du formulaire de contact.</li>
+      <li><strong>Calendly LLC</strong> (États-Unis) pour la prise de rendez-vous en ligne.</li>
+      <li><strong>Netlify, Inc.</strong> (États-Unis) pour l'hébergement du site.</li>
+      <li><strong>Google Ireland Limited / Google LLC</strong> pour la mesure d'audience (Google Analytics), uniquement si vous l'avez accepté via notre bandeau cookies — voir notre <a href="/politique-cookies/">politique de cookies</a>.</li>
+      <li><strong>Cloudflare, Inc.</strong> (États-Unis) pour une mesure d'audience agrégée et anonyme (Cloudflare Web Analytics), qui ne dépose aucun cookie et ne permet pas de vous identifier individuellement.</li>
+    </ul>
+    <p>
+      Ces prestataires sont susceptibles de traiter des données en dehors de l'Union européenne&nbsp;; ils
+      s'engagent contractuellement à respecter un niveau de protection adapté (clauses contractuelles types ou
+      mécanisme équivalent). Vos données ne sont jamais vendues ni cédées à des fins commerciales tierces.
+    </p>
+
+    <h2>Combien de temps conservons-nous vos données&nbsp;?</h2>
+    <p>
+      Les données transmises via le formulaire de contact sont conservées le temps nécessaire au traitement de
+      votre demande, et au maximum 3 ans à compter de notre dernier échange, sauf obligation légale contraire.
+    </p>
+
+    <h2>Vos droits</h2>
+    <p>
+      Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et
+      Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et
+      d'opposition sur vos données, ainsi que d'un droit à la portabilité. Pour exercer ces droits, écrivez à
+      <a href="mailto:antoine@cafethecorner.fr">antoine@cafethecorner.fr</a>. Vous disposez également du droit
+      d'introduire une réclamation auprès de la <strong>CNIL</strong> (<a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a>)
+      si vous estimez que vos droits ne sont pas respectés.
+    </p>
+
+    <h2>Sécurité</h2>
+    <p>
+      Nous prenons des mesures raisonnables (hébergement sécurisé, accès restreint) pour protéger vos données
+      contre tout accès, modification ou divulgation non autorisés.
+    </p>
+  </main>
+<!-- Cloudflare Web Analytics (chargé après le load pour ne pas concurrencer le rendu initial) -->
+<script>
+function loadCfBeacon() {
+  var s = document.createElement('script');
+  s.type = 'module';
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', '{"token": "94f4d6f1435a416b84dbb6d8daf969ca"}');
+  document.body.appendChild(s);
+}
+window.addEventListener('load', function () {
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadCfBeacon, { timeout: 4000 });
+  } else {
+    setTimeout(loadCfBeacon, 2500);
+  }
+});
+</script>
+</body>
+</html>

@@ -61,7 +61,7 @@ faqItems.forEach((item) => {
 // Prise de rendez-vous : la bulle déplie un panneau avec le calendrier Calendly intégré,
 // directement sur la page — jamais de pop-in plein écran, jamais de nouvel onglet.
 const CALENDLY_URL = 'https://calendly.com/antoine-cafethecorner/30min';
-const LOGO_MARK = '<img src="assets/img/logos/logo_icone_creme.svg" width="32" height="23" alt="" aria-hidden="true">';
+const LOGO_MARK = '<img src="/assets/img/logos/logo_icone_creme.svg" width="32" height="23" alt="" aria-hidden="true">';
 
 // Bulle flottante (icône seule)
 const bubble = document.createElement('button');

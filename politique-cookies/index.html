@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politique de cookies — The Corner</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="/assets/img/logos/favicon-v2.png">
+  <link rel="apple-touch-icon" href="/assets/img/logos/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/Poppins-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/Newsreader-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <main class="legal">
+    <a href="/" class="legal__back">← Retour au site</a>
+    <h1>Politique de <em>cookies.</em></h1>
+
+    <h2>En bref</h2>
+    <p>
+      Ce site est volontairement <strong>sobre</strong>&nbsp;: il n'utilise <strong>aucun cookie publicitaire</strong>.
+      Nous utilisons Cloudflare Web Analytics, une mesure d'audience agrégée qui ne dépose aucun cookie et ne
+      vous identifie pas : elle ne nécessite donc pas de consentement. En complément, Google Analytics nous
+      donne une vision plus détaillée, mais uniquement <strong>si vous l'acceptez</strong> via le bandeau
+      affiché lors de votre première visite.
+    </p>
+
+    <h2>Mesure d'audience (Google Analytics)</h2>
+    <p>
+      Si vous cliquez sur <strong>« Accepter »</strong>, Google Analytics (Google Ireland Limited / Google LLC)
+      dépose des cookies permettant de mesurer la fréquentation du site&nbsp;: nombre de visites, pages
+      consultées, provenance du trafic. Ces données sont utilisées uniquement pour comprendre comment le site
+      est utilisé et l'améliorer ; elles ne sont ni revendues, ni croisées avec d'autres fichiers. Elles peuvent
+      être transférées vers les États-Unis, dans le cadre des clauses contractuelles types de Google.
+      Si vous cliquez sur <strong>« Refuser »</strong>, aucun cookie Analytics n'est déposé et aucune donnée
+      n'est envoyée à Google.
+    </p>
+
+    <h2>Modifier votre choix</h2>
+    <p>
+      Vous pouvez changer d'avis à tout moment en cliquant ici&nbsp;:
+      <button type="button" id="cookiePrefsReset" style="background:none; border:1px solid var(--brun); color:var(--brun); border-radius:20px; padding:8px 18px; font:inherit; cursor:pointer;">Gérer mes préférences cookies</button>
+    </p>
+
+    <h2>Stockage technique</h2>
+    <p>
+      Votre choix (accepté ou refusé) est enregistré dans le stockage local de votre navigateur, afin de ne pas
+      vous redemander à chaque visite. Il ne contient aucune donnée personnelle et n'est jamais transmis à des
+      tiers.
+    </p>
+
+    <h2>Services tiers</h2>
+    <p>
+      Si vous utilisez notre lien de prise de rendez-vous (Calendly) ou nos liens vers les réseaux sociaux,
+      ces services peuvent déposer leurs propres cookies, soumis à leurs politiques respectives. Ils ne sont
+      activés que lorsque vous cliquez volontairement sur ces liens.
+    </p>
+
+    <h2>Vos droits</h2>
+    <p>
+      Vous pouvez à tout moment effacer le stockage local de votre navigateur depuis ses réglages.
+      Pour toute question, écrivez-nous à
+      <a href="mailto:antoine@cafethecorner.fr">antoine@cafethecorner.fr</a>.
+    </p>
+  </main>
+  <script>
+    document.getElementById('cookiePrefsReset')?.addEventListener('click', () => {
+      try { localStorage.removeItem('tc_cookie_consent'); } catch (_) {}
+      window.location.href = 'index.html';
+    });
+  </script>
+<!-- Cloudflare Web Analytics (chargé après le load pour ne pas concurrencer le rendu initial) -->
+<script>
+function loadCfBeacon() {
+  var s = document.createElement('script');
+  s.type = 'module';
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.setAttribute('data-cf-beacon', '{"token": "94f4d6f1435a416b84dbb6d8daf969ca"}');
+  document.body.appendChild(s);
+}
+window.addEventListener('load', function () {
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadCfBeacon, { timeout: 4000 });
+  } else {
+    setTimeout(loadCfBeacon, 2500);
+  }
+});
+</script>
+</body>
+</html>
