@@ -71,28 +71,265 @@ bubble.setAttribute('aria-label', 'Réserver un appel avec Antoine');
 bubble.innerHTML = `<span class="booking-bubble__icon">${LOGO_MARK}</span>`;
 document.body.appendChild(bubble);
 
-// Panneau qui se déplie au-dessus de la bulle, avec le calendrier Calendly intégré dedans
+// Panneau qui se déplie au-dessus de la bulle : d'abord quelques questions (une par écran),
+// puis le calendrier Calendly pré-rempli. Le lien "Prendre rendez-vous directement" saute les questions.
 const panel = document.createElement('div');
 panel.className = 'booking-panel';
 panel.innerHTML = `
   <div class="booking-panel__head">
-    <span class="booking-panel__title">Réserver un appel</span>
+    <span class="booking-panel__title">Parlons de votre établissement</span>
     <button type="button" class="booking-panel__close" aria-label="Fermer">✕</button>
   </div>
-  <p class="booking-panel__intro">30 minutes pour parler de votre établissement et voir comment on peut vous accompagner.</p>
-  <div class="booking-panel__body"></div>
+  <div class="quiz__progress" aria-hidden="true"><span></span></div>
+  <div class="booking-panel__body" aria-live="polite"></div>
+  <div class="quiz__foot">
+    <button type="button" class="quiz__back">← Retour</button>
+    <button type="button" class="quiz__direct">Prendre rendez-vous directement</button>
+  </div>
 `;
 document.body.appendChild(panel);
 
-let calendlyLoaded = false;
+// Les questions. "when" : n'afficher l'écran que si la condition est vraie.
+const hasMachine = (a) => a.offre === 'Un ou plusieurs distributeurs';
+const QUIZ = [
+  { id: 'type', label: "Type d'établissement", q: 'Vous êtes…', hint: 'Quelques questions rapides (1 minute) avant de choisir votre créneau.',
+    options: ['Une école ou une université', 'Un lycée', 'Une entreprise', 'Autre'] },
+  { id: 'effectif', label: 'Effectif', q: 'Combien de personnes sur votre site ?',
+    options: ['Moins de 300', '300 à 1 000', '1 000 à 3 000', 'Plus de 3 000'] },
+  { id: 'offre', label: 'Offre actuelle', q: "Aujourd'hui, pour la pause, vous avez…",
+    options: ["Rien pour l'instant", 'Un ou plusieurs distributeurs', 'Une cafétéria ou un point de restauration', 'Autre'] },
+  { id: 'actuel', type: 'groups', when: hasMachine, q: 'Et votre distributeur actuel ?', groups: [
+    { id: 'satisfaction', label: 'Satisfaction', q: 'Vos usagers en sont…', options: ['Satisfaits', 'Mitigés', 'Pas satisfaits', 'Je ne sais pas'] },
+    { id: 'contrat', label: 'Fin du contrat', q: 'Votre contrat se termine…', options: ['Dans moins de 6 mois', 'Dans 6 à 12 mois', "Dans plus d'un an", 'Je ne sais pas'] },
+  ] },
+  { id: 'redevance', type: 'sliders', when: hasMachine, q: 'Ce que votre prestataire vous reverse',
+    hint: 'Facultatif. Un ordre de grandeur nous aide à préparer une proposition chiffrée.',
+    tip: "Avec The Corner, l'installation est gratuite et votre établissement touche une commission sur les ventes.",
+    sliders: [
+      { id: 'montant', label: 'Redevance annuelle', min: 0, max: 20000, step: 250,
+        fmt: (v) => `${Number(v).toLocaleString('fr-FR')} €${v >= 20000 ? ' et plus' : ''} par an` },
+      { id: 'pourcentage', label: 'Pourcentage sur les ventes', min: 0, max: 30, step: 1,
+        fmt: (v) => `${v} %${v >= 30 ? ' et plus' : ''}` },
+    ] },
+  { id: 'interets', label: 'Intérêts', type: 'multi', q: "Qu'est-ce qui vous intéresse ?", hint: 'Plusieurs choix possibles.',
+    tip: "Entretien et réapprovisionnement inclus : vous n'avez rien à gérer.",
+    options: ['Café de spécialité', 'Snacking', 'Fontaine à eau', 'Frigo connecté (plats frais ou surgelés)', 'Distributeur de plats chauds (nouilles, soupes…)', 'Je ne sais pas encore'] },
+  { id: 'contact', type: 'contact', q: 'Où peut-on vous joindre ?',
+    roles: ['Direction', 'Services généraux', 'Vie étudiante', 'Autre'] },
+];
+
+const quizBody = panel.querySelector('.booking-panel__body');
+const quizBar = panel.querySelector('.quiz__progress span');
+const quizBack = panel.querySelector('.quiz__back');
+const quizFoot = panel.querySelector('.quiz__foot');
+let answers = {};
+let stepHistory = [];
+let current = 0;
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const visibleSteps = () => QUIZ.filter((s) => !s.when || s.when(answers));
+const nextIndex = (from) => {
+  for (let i = from + 1; i < QUIZ.length; i++) if (!QUIZ[i].when || QUIZ[i].when(answers)) return i;
+  return -1;
+};
+
+function goTo(i, push = true) {
+  if (push) stepHistory.push(current);
+  current = i;
+  renderStep();
+}
+function advance() {
+  const n = nextIndex(current);
+  n === -1 ? showCalendar() : goTo(n);
+}
+
+function optionButtons(group, options, multi) {
+  const chosen = answers[group];
+  return options.map((o) => {
+    const on = multi ? (chosen || []).includes(o) : chosen === o;
+    return `<button type="button" class="quiz__opt${on ? ' is-on' : ''}" data-group="${group}" data-value="${esc(o)}" aria-pressed="${on}">${esc(o)}</button>`;
+  }).join('');
+}
+
+function renderStep() {
+  const step = QUIZ[current];
+  const steps = visibleSteps();
+  const pos = steps.indexOf(step) + 1;
+  quizBar.style.width = `${(pos / (steps.length + 1)) * 100}%`;
+  quizFoot.hidden = false;
+  quizBack.style.visibility = stepHistory.length ? 'visible' : 'hidden';
+
+  let html = `<div class="quiz__step"><p class="quiz__count">${pos} / ${steps.length}</p><h3 class="quiz__q">${esc(step.q)}</h3>`;
+  if (step.hint) html += `<p class="quiz__hint">${esc(step.hint)}</p>`;
+
+  if (!step.type) {
+    html += `<div class="quiz__opts">${optionButtons(step.id, step.options, false)}</div>`;
+  } else if (step.type === 'groups') {
+    html += step.groups.map((g) => `<p class="quiz__sub">${esc(g.q)}</p><div class="quiz__opts quiz__opts--row">${optionButtons(g.id, g.options, false)}</div>`).join('');
+    html += '<button type="button" class="btn btn--primary btn--small quiz__next">Continuer</button>';
+  } else if (step.type === 'multi') {
+    html += `<div class="quiz__opts">${optionButtons(step.id, step.options, true)}</div>`;
+    html += '<button type="button" class="btn btn--primary btn--small quiz__next">Continuer</button>';
+  } else if (step.type === 'sliders') {
+    html += step.sliders.map((s) => {
+      const v = answers[s.id];
+      const set = typeof v === 'number';
+      return `<div class="quiz__slider${v === 'Ne sait pas' ? ' is-off' : ''}">
+        <div class="quiz__slider-head"><span>${esc(s.label)}</span><strong data-out="${s.id}">${set ? esc(s.fmt(v)) : v === 'Ne sait pas' ? 'Je ne sais pas' : 'Faites glisser'}</strong></div>
+        <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${set ? v : s.min}" data-slider="${s.id}" aria-label="${esc(s.label)}">
+        <button type="button" class="quiz__unknown${v === 'Ne sait pas' ? ' is-on' : ''}" data-unknown="${s.id}">Je ne sais pas</button>
+      </div>`;
+    }).join('');
+    html += '<button type="button" class="btn btn--primary btn--small quiz__next">Continuer</button>';
+  } else if (step.type === 'contact') {
+    const c = answers;
+    html += `<form class="quiz__form" novalidate>
+      <input type="text" name="_gotcha" class="quiz__trap" tabindex="-1" autocomplete="off">
+      <label>Prénom et nom<input name="nom" autocomplete="name" required value="${esc(c.nom || '')}"></label>
+      <label>Établissement<input name="ecole" autocomplete="organization" required value="${esc(c.ecole || '')}"></label>
+      <label>Email professionnel<input name="email" type="email" autocomplete="email" required value="${esc(c.email || '')}"></label>
+      <label>Téléphone <span>(facultatif)</span><input name="tel" type="tel" autocomplete="tel" value="${esc(c.tel || '')}"></label>
+      <p class="quiz__sub">Votre rôle</p>
+      <div class="quiz__opts quiz__opts--row">${optionButtons('role', step.roles, false)}</div>
+      <p class="quiz__err" role="alert"></p>
+      <button type="submit" class="btn btn--primary btn--small quiz__next">Choisir mon créneau →</button>
+      <p class="quiz__legal">Vos réponses servent uniquement à préparer notre échange. <a href="/politique-confidentialite/">Confidentialité</a></p>
+    </form>`;
+  }
+  if (step.tip) html += `<p class="quiz__tip">${esc(step.tip)}</p>`;
+  html += '</div>';
+  quizBody.innerHTML = html;
+  quizBody.scrollTop = 0;
+  bindStep(step);
+}
+
+function bindStep(step) {
+  quizBody.querySelectorAll('.quiz__opt').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const { group, value } = btn.dataset;
+      if (step.type === 'multi') {
+        const list = answers[group] || [];
+        answers[group] = list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+        btn.classList.toggle('is-on');
+        btn.setAttribute('aria-pressed', btn.classList.contains('is-on'));
+        return;
+      }
+      answers[group] = value;
+      btn.parentNode.querySelectorAll('.quiz__opt').forEach((b) => {
+        b.classList.toggle('is-on', b === btn);
+        b.setAttribute('aria-pressed', b === btn);
+      });
+      // Choix unique sur un écran à une seule question : on passe directement à la suite
+      if (!step.type) setTimeout(advance, 180);
+    });
+  });
+
+  quizBody.querySelectorAll('[data-slider]').forEach((input) => {
+    const s = step.sliders.find((x) => x.id === input.dataset.slider);
+    input.addEventListener('input', () => {
+      answers[s.id] = Number(input.value);
+      quizBody.querySelector(`[data-out="${s.id}"]`).textContent = s.fmt(answers[s.id]);
+      input.closest('.quiz__slider').classList.remove('is-off');
+      quizBody.querySelector(`[data-unknown="${s.id}"]`).classList.remove('is-on');
+    });
+  });
+  quizBody.querySelectorAll('[data-unknown]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.unknown;
+      answers[id] = 'Ne sait pas';
+      btn.classList.add('is-on');
+      btn.closest('.quiz__slider').classList.add('is-off');
+      quizBody.querySelector(`[data-out="${id}"]`).textContent = 'Je ne sais pas';
+    });
+  });
+
+  const next = quizBody.querySelector('.quiz__next');
+  if (next && step.type !== 'contact') next.addEventListener('click', advance);
+
+  const form = quizBody.querySelector('.quiz__form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      ['nom', 'ecole', 'email', 'tel'].forEach((k) => { answers[k] = (data.get(k) || '').toString().trim(); });
+      const err = form.querySelector('.quiz__err');
+      if (!answers.nom || !answers.ecole || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email)) {
+        err.textContent = 'Merci de renseigner votre nom, votre établissement et un email valide.';
+        return;
+      }
+      if (data.get('_gotcha')) return;
+      sendQuiz();
+      showCalendar(true);
+    });
+  }
+}
+
+// Envoi des réponses par email (Formspree), même si la personne ne réserve pas ensuite
+function sendQuiz() {
+  const a = answers;
+  const fmtSlider = (id) => {
+    const s = QUIZ.find((x) => x.id === 'redevance').sliders.find((x) => x.id === id);
+    return typeof a[id] === 'number' ? s.fmt(a[id]) : a[id] || 'Non renseigné';
+  };
+  const data = new FormData();
+  data.set('_subject', `Parcours rendez-vous : ${a.ecole}`);
+  data.set('Nom', a.nom);
+  data.set('Établissement', a.ecole);
+  data.set('email', a.email);
+  data.set('Téléphone', a.tel || 'Non renseigné');
+  data.set('Rôle', a.role || 'Non renseigné');
+  QUIZ.forEach((s) => {
+    if (s.when && !s.when(a)) return;
+    if (s.type === 'groups') s.groups.forEach((g) => data.set(g.label, a[g.id] || 'Non renseigné'));
+    else if (s.type === 'sliders') s.sliders.forEach((x) => data.set(x.label, fmtSlider(x.id)));
+    else if (s.label) data.set(s.label, Array.isArray(a[s.id]) ? a[s.id].join(', ') || 'Non renseigné' : a[s.id] || 'Non renseigné');
+  });
+  fetch(FORMSPREE_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } }).catch(() => {});
+}
+
+// Calendly : le script n'est pas chargé sur toutes les pages, on le charge au besoin
+function withCalendly(cb) {
+  if (window.Calendly) return cb();
+  let s = document.querySelector('script[src*="calendly.com/assets/external/widget.js"]');
+  if (!s) {
+    s = document.createElement('script');
+    s.src = 'https://assets.calendly.com/assets/external/widget.js';
+    document.head.appendChild(s);
+  }
+  s.addEventListener('load', cb, { once: true });
+}
+
+function showCalendar(fromQuiz = false) {
+  if (current !== -1) stepHistory.push(current);
+  current = -1;
+  quizBar.style.width = '100%';
+  quizBack.style.visibility = 'visible';
+  panel.querySelector('.quiz__direct').hidden = true;
+  const first = (answers.nom || '').split(' ')[0];
+  quizBody.innerHTML = `<p class="quiz__ready">${fromQuiz ? `Merci${first ? ` ${esc(first)}` : ''} ! ` : ''}Choisissez le créneau qui vous arrange pour un échange de 30 minutes.</p><div class="quiz__cal"></div>`;
+  // Nom et email pré-remplis via les paramètres d'URL reconnus par Calendly
+  const prefill = fromQuiz ? `?name=${encodeURIComponent(answers.nom)}&email=${encodeURIComponent(answers.email)}` : '';
+  withCalendly(() => {
+    window.Calendly.initInlineWidget({
+      url: CALENDLY_URL + prefill,
+      parentElement: quizBody.querySelector('.quiz__cal'),
+    });
+  });
+}
+
+quizBack.addEventListener('click', () => {
+  if (!stepHistory.length) return;
+  panel.querySelector('.quiz__direct').hidden = false;
+  goTo(stepHistory.pop(), false);
+});
+panel.querySelector('.quiz__direct').addEventListener('click', () => showCalendar(false));
+
+let quizStarted = false;
 function openBookingPanel() {
   panel.classList.add('is-open');
-  if (!calendlyLoaded && window.Calendly) {
-    window.Calendly.initInlineWidget({
-      url: CALENDLY_URL,
-      parentElement: panel.querySelector('.booking-panel__body'),
-    });
-    calendlyLoaded = true;
+  if (!quizStarted) {
+    quizStarted = true;
+    renderStep();
   }
 }
 function closeBookingPanel() {

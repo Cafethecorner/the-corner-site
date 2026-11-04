@@ -772,6 +772,52 @@ a.card .card__link { margin-top:auto; }
 .booking-panel__intro { padding:14px 18px 0; font-size:14px; color:var(--brun-soft); flex:none; }
 .booking-panel__body { flex:1; overflow-y:auto; position:relative; }
 .booking-panel__body iframe { display:block; }
+
+/* Questionnaire avant prise de rendez-vous (dans le panneau) */
+.quiz__progress { height:3px; background:rgba(72,38,29,.08); flex:none; }
+.quiz__progress span { display:block; height:100%; width:0; background:var(--orange); transition:width .3s var(--ease); }
+.quiz__step { padding:20px 18px 22px; display:flex; flex-direction:column; gap:12px; }
+.quiz__count { font-size:12px; font-weight:500; letter-spacing:.14em; color:var(--brun-soft); }
+.quiz__q { font-size:21px; font-weight:500; line-height:1.25; color:var(--brun); }
+.quiz__hint { font-size:13.5px; color:var(--brun-soft); margin-top:-4px; }
+.quiz__sub { font-size:14px; font-weight:500; color:var(--brun); margin-top:6px; }
+.quiz__opts { display:flex; flex-direction:column; gap:8px; }
+.quiz__opts--row { flex-direction:row; flex-wrap:wrap; }
+.quiz__opt {
+  text-align:left; font:inherit; font-size:14.5px; color:var(--brun); background:var(--creme);
+  border:1.5px solid transparent; border-radius:14px; padding:12px 14px; cursor:pointer;
+  transition:border-color .2s var(--ease), background .2s var(--ease);
+}
+.quiz__opts--row .quiz__opt { padding:9px 13px; font-size:13.5px; border-radius:999px; }
+.quiz__opt:hover { border-color:rgba(72,38,29,.25); }
+.quiz__opt.is-on { border-color:var(--orange); background:#fff1ea; }
+.quiz__next { align-self:flex-start; margin-top:6px; }
+.quiz__tip { font-size:13px; color:var(--brun); background:var(--bleu); border-radius:14px; padding:12px 14px; margin-top:4px; }
+.quiz__slider { background:var(--creme); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:opacity .2s var(--ease); }
+.quiz__slider.is-off input { opacity:.35; }
+.quiz__slider-head { display:flex; justify-content:space-between; align-items:baseline; gap:10px; font-size:14px; color:var(--brun); }
+.quiz__slider-head strong { font-weight:500; color:var(--orange); text-align:right; }
+.quiz__slider input[type=range] { width:100%; accent-color:var(--orange); height:28px; cursor:pointer; }
+.quiz__unknown { align-self:flex-start; font:inherit; font-size:12.5px; color:var(--brun-soft); background:#fff; border:1px solid rgba(72,38,29,.18); border-radius:999px; padding:5px 11px; cursor:pointer; }
+.quiz__unknown.is-on { border-color:var(--orange); color:var(--orange); }
+.quiz__form { display:flex; flex-direction:column; gap:10px; }
+.quiz__form label { display:flex; flex-direction:column; gap:5px; font-size:13px; font-weight:500; color:var(--brun); }
+.quiz__form label span { font-weight:400; color:var(--brun-soft); }
+.quiz__form input:not([type=range]) { font:inherit; font-size:15px; color:var(--brun); background:var(--creme); border:1.5px solid transparent; border-radius:12px; padding:11px 12px; }
+.quiz__form input:focus { outline:none; border-color:var(--orange); }
+.quiz__trap { position:absolute; left:-9999px; }
+.quiz__err { font-size:13px; color:#c0392b; min-height:0; }
+.quiz__err:empty { display:none; }
+.quiz__legal { font-size:12px; color:var(--brun-soft); }
+.quiz__legal a { text-decoration:underline; }
+.quiz__ready { padding:16px 18px 4px; font-size:14px; color:var(--brun); }
+.quiz__cal { height:620px; }
+.quiz__cal iframe { width:100%; height:100%; }
+.quiz__foot { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 18px; border-top:1px solid rgba(72,38,29,.1); flex:none; }
+.quiz__foot[hidden] { display:none; }
+.quiz__back, .quiz__direct { background:none; border:none; font:inherit; font-size:13px; color:var(--brun-soft); cursor:pointer; padding:4px 0; }
+.quiz__direct { text-decoration:underline; margin-left:auto; }
+.quiz__back:hover, .quiz__direct:hover { color:var(--orange); }
 @media (max-width:480px) {
   .booking-bubble { right:16px; bottom:16px; }
   .booking-panel { right:16px; left:16px; width:auto; bottom:86px; }
