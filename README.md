@@ -44,11 +44,11 @@ Header et footer identiques sur toutes les pages, avec un bouton « Parlons-en �
 ## SEO / technique
 
 - `sitemap.xml` et `robots.txt` à la racine — penser à mettre à jour le sitemap si des pages sont ajoutées/retirées.
-- `netlify.toml` : en-têtes de sécurité, cache long sur polices/images, redirection HTTP→HTTPS.
+- Format d'URL officiel : avec slash final (`/histoire/`). Les fichiers `histoire.html`, `contact.html`, etc. à la racine
+  ne sont que des redirections des anciennes adresses : ne pas les supprimer.
 - Domaine : `cafethecorner.fr`.
 
 ## Mise en ligne
 
-Déployé sur **Netlify**, branché sur ce dépôt Git (déploiement continu à chaque push sur `main`).
-Une fois le domaine connecté dans Netlify (Site settings → Domain management), activer l'interrupteur
-**« Force HTTPS »** dès que le certificat SSL est généré.
+Hébergé sur **GitHub Pages** (dépôt `Cafethecorner/the-corner-site`), mise en ligne automatique à chaque push sur `main`.
+HTTPS forcé dans Settings → Pages (« Enforce HTTPS »).

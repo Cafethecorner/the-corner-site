@@ -32,7 +32,7 @@ body {
   font-family:var(--font-main); font-weight:300; color:var(--brun);
   background:var(--creme); line-height:1.65; -webkit-font-smoothing:antialiased; overflow-x:hidden;
 }
-img { max-width:100%; display:block; }
+img { max-width:100%; height:auto; display:block; }
 a { color:inherit; text-decoration:none; }
 ul,ol { list-style:none; }
 
@@ -152,7 +152,7 @@ ul,ol { list-style:none; }
 .machine { background:var(--brun); color:var(--creme); overflow:hidden; }
 .machine__inner { display:grid; grid-template-columns:.92fr 1.08fr; gap:72px; align-items:center; }
 .machine__visual { display:flex; justify-content:center; }
-.machine__visual img { max-height:560px; width:auto; filter:drop-shadow(0 30px 60px rgba(0,0,0,.45)); }
+.machine__visual img { max-height:560px; height:560px; width:auto; filter:drop-shadow(0 30px 60px rgba(0,0,0,.45)); }
 .machine__text { margin:22px 0 36px; font-size:17px; color:rgba(248,245,240,.75); max-width:480px; }
 .machine__features { display:grid; grid-template-columns:1fr 1fr; gap:26px 36px; margin-bottom:42px; }
 .machine__features h3 { font-size:17px; font-weight:500; margin-bottom:6px; padding-left:16px; position:relative; }
