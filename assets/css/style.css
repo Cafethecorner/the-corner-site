@@ -384,6 +384,7 @@ ul,ol { list-style:none; }
   .nav__top img { height:26px; width:auto; }
   .nav__close { background:none; border:none; font-size:22px; line-height:1; color:var(--brun); cursor:pointer; padding:4px; }
   .nav__kicker { display:block; font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--brun-soft); margin:0 0 14px; }
+  .nav__kicker--spaced { margin-top:24px; }
   .nav__links { display:flex; flex-direction:column; gap:16px; margin-bottom:30px; }
   .nav__links .nav__link { font-size:26px; font-weight:400; padding:0; }
   .nav__divider { display:block; border-top:1px solid rgba(72,38,29,.14); margin-bottom:26px; }
