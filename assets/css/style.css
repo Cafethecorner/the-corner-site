@@ -773,6 +773,24 @@ a.card .card__link { margin-top:auto; }
 .booking-panel__body { flex:1; overflow-y:auto; position:relative; }
 .booking-panel__body iframe { display:block; }
 
+/* Bulle de message à côté de l'icône (ne masque pas le contenu) */
+.booking-teaser {
+  position:fixed; right:94px; bottom:30px; z-index:218; max-width:290px;
+  display:flex; align-items:flex-start; gap:4px;
+  background:#fff; border-radius:16px 16px 4px 16px; box-shadow:0 14px 36px rgba(72,38,29,.18);
+  padding:12px 10px 12px 14px;
+  opacity:0; transform:translateY(10px); pointer-events:none;
+  transition:opacity .3s var(--ease), transform .3s var(--ease);
+}
+.booking-teaser.is-visible { opacity:1; transform:translateY(0); pointer-events:auto; }
+.booking-teaser__msg { background:none; border:none; padding:0; font:inherit; font-size:13.5px; line-height:1.4; color:var(--brun); text-align:left; cursor:pointer; }
+.booking-teaser__msg:hover { color:var(--orange); }
+.booking-teaser__close { background:none; border:none; font-size:12px; color:var(--brun-soft); cursor:pointer; padding:2px 4px; line-height:1; }
+.booking-teaser__close:hover { color:var(--orange); }
+@media (max-width:480px) {
+  .booking-teaser { right:16px; left:auto; bottom:84px; max-width:calc(100vw - 32px); border-radius:16px 16px 4px 16px; }
+}
+
 /* Questionnaire avant prise de rendez-vous (dans le panneau) */
 .quiz__progress { height:3px; background:rgba(72,38,29,.08); flex:none; }
 .quiz__progress span { display:block; height:100%; width:0; background:var(--orange); transition:width .3s var(--ease); }

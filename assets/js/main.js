@@ -324,9 +324,47 @@ quizBack.addEventListener('click', () => {
 });
 panel.querySelector('.quiz__direct').addEventListener('click', () => showCalendar(false));
 
+// Petite bulle de message près de l'icône : apparaît après 20 s ou à mi-page,
+// une seule fois par visite, jamais si le panneau a déjà été ouvert. Elle ne masque rien.
+const teaser = document.createElement('div');
+teaser.className = 'booking-teaser';
+teaser.innerHTML = `
+  <button type="button" class="booking-teaser__msg">👋 Un projet pour votre établissement&nbsp;? 1&nbsp;minute pour préparer votre échange.</button>
+  <button type="button" class="booking-teaser__close" aria-label="Fermer le message">✕</button>
+`;
+document.body.appendChild(teaser);
+
+const TEASER_KEY = 'tc-teaser-seen';
+const teaserSeen = () => { try { return sessionStorage.getItem(TEASER_KEY) === '1'; } catch (e) { return false; } };
+const markTeaserSeen = () => { try { sessionStorage.setItem(TEASER_KEY, '1'); } catch (e) { /* stockage indisponible */ } };
+function hideTeaser() {
+  teaser.classList.remove('is-visible');
+  markTeaserSeen();
+}
+function showTeaser() {
+  if (teaserSeen() || panel.classList.contains('is-open')) return;
+  teaser.classList.add('is-visible');
+  window.removeEventListener('scroll', onTeaserScroll);
+  clearTimeout(teaserTimer);
+}
+function onTeaserScroll() {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  if (max > 0 && window.scrollY / max >= 0.5) showTeaser();
+}
+let teaserTimer;
+if (!teaserSeen()) {
+  teaserTimer = setTimeout(showTeaser, 20000);
+  window.addEventListener('scroll', onTeaserScroll, { passive: true });
+}
+teaser.querySelector('.booking-teaser__msg').addEventListener('click', () => openBookingPanel());
+teaser.querySelector('.booking-teaser__close').addEventListener('click', hideTeaser);
+
 let quizStarted = false;
 function openBookingPanel() {
   panel.classList.add('is-open');
+  hideTeaser();
+  clearTimeout(teaserTimer);
+  window.removeEventListener('scroll', onTeaserScroll);
   if (!quizStarted) {
     quizStarted = true;
     renderStep();
