@@ -904,3 +904,8 @@ a.card .card__link { margin-top:auto; }
 .trust--case .trust__stats { margin-bottom:0; }
 .refs__quote { background:linear-gradient(rgba(253,251,248,.86),rgba(253,251,248,.86)),url('../img/gradients/gradient-04.jpg') center/cover no-repeat; box-shadow:0 6px 24px rgba(72,38,29,.06); }
 .section--tight-top { padding-top:24px; }
+/* Études de cas : le texte de droite démarre à la hauteur du titre de gauche */
+@media (min-width:1021px) {
+  .problem__inner--top { align-items:start; }
+  .problem__inner--top .problem__col--text { padding-top:calc(24px + .35 * clamp(32px,4.4vw,54px)); }
+}
